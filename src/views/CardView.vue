@@ -6,7 +6,6 @@ import Button from "primevue/button";
 import { useCartStore } from '@/stores/CartWishlist.js';
 
 const cartStore = useCartStore();
-
 const route = useRoute();
 const product = ref(null);
 
@@ -29,42 +28,22 @@ onMounted(() => {
     }
   );
 });
-
 </script>
 
 <template>
-    <div v-if="product" class="product-view">
+    <div v-if="product" class="product-view m-auto">
         <div class="product-container">
             <img :src="product.image" alt="Product Image" class="product-image" />
             <div class="product-details">
                 <h2 class="title">{{ product.name }}</h2>
-                <b></b>
                 <p><strong>Category:</strong> {{ product.category }}</p>
                 <p><strong>Description:</strong> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa consectetur ut rem fugit neque. Autem suscipit tempore earum facilis neque, libero optio dolorum doloribus odio sint esse mollitia atque quas!</p>
                 <p class="price">Price: BDT {{ product.price }} TK</p>
+                
                 <div class="button_section">
-                    <Button 
-                        class="btn"
-                        label="Buy Now" 
-                    />
-                        
-                    <Button 
-                        icon="pi pi-heart-fill" 
-                        :class="{ 'wishlist-active': cartStore.isInWishList(product) }"
-                        severity="secondary" 
-                        @click="cartStore.addToWishList(product)"
-                        label="Favourite"
-                        class="wishlist-btn"
-                    />
-
-                    <Button 
-                        icon="pi pi-cart-arrow-down" 
-                        :class="{ 'cart-active': cartStore.isInCart(product) }"
-                        severity="primary" 
-                        @click="cartStore.addToCart(product)" 
-                        label="Cart"
-                        class="cart-btn"
-                    />
+                    <Button class="btn" label="Buy Now" />
+                    <Button icon="pi pi-heart-fill" :class="{ 'wishlist-active': cartStore.isInWishList(product) }" severity="secondary" @click="cartStore.addToWishList(product)" label="Favourite" class="wishlist-btn" />
+                    <Button icon="pi pi-cart-arrow-down" :class="{ 'cart-active': cartStore.isInCart(product) }" severity="primary" @click="cartStore.addToCart(product)" label="Cart" class="cart-btn" />
                 </div>
 
                 <div id="buy_form">
@@ -81,10 +60,7 @@ onMounted(() => {
                     </form>
                 </div>
             </div>
-
         </div>
-
-        
     </div>
     <div v-else>
         <p>Product not found.</p>
@@ -103,71 +79,73 @@ h2 {
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 1rem;
-    height: 100%;
-    justify-items: center;
-    max-height: 2.5rem;
     width: 100%;
 }
 
 .btn {
-    flex: 2 1 auto;
+    flex: 1 1 auto;
     background-color: #ffffff;
     color: #1e1e1e;
-    border: 1px solid #1e1e1e
+    border: 1px solid #1e1e1e;
 }
 
 .btn:hover {
-    flex: 2 1 auto;
     background-color: #1e1e1e;
     color: #e0e0e0;
 }
 
 .product-view {
-    top: 200px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     padding: 20px;
     width: 100%;
-    height: auto;
     min-height: 100vh;
+    padding-top: 80px; /* Push content down to avoid navbar overlap */
 }
 
 .product-container {
     display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
     gap: 1.5rem;
     max-width: 1024px;
     background: white;
     padding: 20px;
     width: 100%;
-    justify-content: space-between;
-    line-height: 1.2857142857;
     align-items: flex-start;
 }
 
 .product-image {
-    width: 400px;
+    width: 100%;
+    max-width: 400px;
     height: auto;
     border-radius: 8px;
-    margin: auto;
-    margin-top: 0;
+    align-self: flex-start;
 }
 
 .product-details {
-    flex: 1;
     display: flex;
     flex-direction: column;
+    flex-grow: 1;
     gap: 1rem;
-    height: 100%;
-    justify-content: space-around;
 }
 
-.price {
-    font-size: 1rem;
-    font-weight: bold;
+@media (max-width: 768px) {
+    .product-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .product-details {
+        width: 100%;
+    }
+    .button_section {
+        flex-direction: column;
+    }
+    form {
+        width: 100%;
+    }
+    input, button {
+        width: 100%;
+    }
 }
 
 #buy_form h2 {
@@ -181,12 +159,15 @@ form {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 100%;
 }
 
 input {
   padding: 10px;
-  border: 1px solid #ccc;
+  background: #ffffff;
+  border: 1px solid #1f1f1f;
   border-radius: 5px;
+  outline: none;
   font-size: 1rem;
 }
 

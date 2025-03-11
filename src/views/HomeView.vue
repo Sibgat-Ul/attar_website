@@ -101,7 +101,6 @@ onMounted(() => {
   cursor: pointer;
 }
 
-
 @media (max-width: 1024px) {
   .hero-text p {
     font-size: 2rem;
