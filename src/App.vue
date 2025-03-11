@@ -41,3 +41,22 @@ header {
   }
 } */
 </style>
+
+<style>
+.wishlist-active {
+  color: #f44336 !important;
+}
+
+.wishlist-active:hover {
+  color: #f44336 !important;
+}
+
+.cart-btn {
+  background-color: #fff;
+}
+
+.cart-active {
+  background-color: #34d399 !important;
+  color: #1e1e1e !important;
+}
+</style>

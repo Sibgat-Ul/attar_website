@@ -1,9 +1,75 @@
+<template>
+    <div class="text-center">
+        <h3 class="m-8 mb-0">
+            {{ title }}
+        </h3>
+
+        <div class="products">
+            <Card class="card text-start" v-for="product in props.products" :key="product.id">
+                <template #header>
+                    <div>
+                        <img 
+                            :src="product.image"
+                            class="product_img rounded"
+                            style="cursor: pointer;"
+                            @click="$router.push(`/product/${product.id}`)" 
+                        />
+                    </div>
+                </template>
+
+                <template #title>
+                    <p style="cursor: pointer;" class="font-medium flex justify-between items-center" @click="$router.push(`/product/${product.id}`)">
+                        {{ product.name }}
+                        <span class="ml-2">
+                            <Tag :value="product.inventoryStatus" :severity="getSeverity(product.inventoryStatus)" />
+                        </span>
+                    </p>
+                </template>
+
+                <template #subtitle>
+                    <p>{{ product.category }}</p>
+                </template>
+
+                <template #content>
+                    <div class="info border-t-1">
+                        <p>Notes: fruity, vanilla, musk, cinnamon</p>
+                    </div>
+                </template>
+
+                <template #footer>
+                    <div class="flex justify-between items-center">
+                        <div class="mt-0 font-semibold text-md">BDT: {{ product.price }} TK</div>
+                        <span>
+                            <Button 
+                                icon="pi pi-heart-fill" 
+                                :class="{ 'wishlist-active': cartStore.isInWishList(product) }"
+                                severity="secondary" 
+                                class="min_btn wishlist-btn"
+                                @click="cartStore.addToWishList(product)"
+                            />
+
+                            <Button 
+                                icon="pi pi-cart-arrow-down" 
+                                :class="{ 'cart-active': cartStore.isInCart(product) }"
+                                severity="primary" 
+                                class="min_btn ml-2 cart-btn"
+                                @click="cartStore.addToCart(product)" 
+                            />
+                        </span>
+                    </div>
+                </template>
+            </Card>
+        </div>
+    </div>
+</template>
 
 <script setup>
-import Card from "primevue/card"
+import Card from "primevue/card";
 import Button from "primevue/button";
 import Tag from "primevue/tag";
-import { ref, watchEffect , toRef } from "vue";
+import { useCartStore } from '@/stores/CartWishlist.js';
+
+const cartStore = useCartStore();
 
 const props = defineProps({
   title: {
@@ -16,7 +82,6 @@ const props = defineProps({
     required: true,
     default: () => []
   },
-  
 });
 
 const getSeverity = (status) => {
@@ -34,67 +99,10 @@ const getSeverity = (status) => {
           return null;
   }
 };
-
 </script>
 
-<template>
-    <div class="text-center">
-        <h3 class="m-8 mb-0">
-            {{ title }}
-        </h3>
-
-        <div class="products">
-            <Card class="card text-start" v-for="product in props.products" :key="product.id">
-                <template #header>
-                <!-- <img 
-                    alt="user header" 
-                    :src= "`https://primefaces.org/cdn/primevue/images/product/${product.image}`"
-                /> -->
-
-                <div class="">
-                    <img 
-                    :src= "product.image"
-                    class="product_img rounded"
-                    />
-                </div>
-                </template>
-
-                <template #title>
-                <p class="font-medium flex justify-between items-center">
-                    {{ product.name }}
-                    
-                    <span class="ml-2">
-                    <Tag :value="product.inventoryStatus" :severity="getSeverity(product.inventoryStatus)" />
-                    </span>
-                </p>
-                </template>
-
-                <template #subtitle>
-                <p>{{ product.category }}</p>
-                </template>
-                    
-                <template #content>
-                    <div class="info border-t-1">
-                        <p>Notes: fruity, vanilla, musk, cinnamon</p>
-                    </div>
-                </template>
-
-                <template #footer>
-                    <div class="flex justify-between items-center">
-                    <div class="mt-0 font-semibold text-md">BDT: {{ product.price }} TK</div>
-                    <span>
-                        <Button icon="pi pi-heart-fill" severity="secondary" class="min_btn red" />
-                        <Button icon="pi pi-cart-arrow-down" severity="primary" class="min_btn buy ml-2"/>
-                    </span>
-                </div>
-                </template>
-            </Card>
-        </div>
-    </div>
-</template>
-
 <style scoped>
-      h3 {
+    h3 {
         font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
         font-size: 1.5em;
         font-weight: bold;
@@ -149,6 +157,8 @@ const getSeverity = (status) => {
         overflow: hidden;
         background: #fff;
         color: #1e1e1e;
+        border: 1px solid #fff;
+        transition: border 1s;
     }
 
     .card:hover {
@@ -166,6 +176,20 @@ const getSeverity = (status) => {
     .product_img:hover {
         transform: scale(1);
         transition: transform 0.5s;
+    }
+
+    .wishlist-active {
+        color: #f44336 !important;
+    }
+    
+
+    .cart-btn {
+        background-color: #fff !important;
+    }
+
+    .cart-active {
+        background-color: #34d399 !important;
+        color: #1e1e1e !important;
     }
 
 </style>

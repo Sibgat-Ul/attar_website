@@ -153,4 +153,6 @@ onUnmounted(() => {
 .dot.active {
   background: rgba(255, 255, 255, 1);
 }
+
+
 </style>

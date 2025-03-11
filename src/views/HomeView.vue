@@ -101,6 +101,19 @@ onMounted(() => {
   cursor: pointer;
 }
 
+
+@media (max-width: 1024px) {
+  .hero-text p {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-text p {
+    font-size: 1.5rem;
+  }
+}
+
 /* Carousel styling adjustments */
 :deep(.slide-image) {
   width: 100%;
