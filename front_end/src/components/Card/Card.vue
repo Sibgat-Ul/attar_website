@@ -1,6 +1,7 @@
 <template>
     <div class="card">
         <img :src="image" alt="Card image" class="card-img">
+        
         <div class="card-content">
             <h3 class="card-title"><slot name="title"></slot></h3>
             <div class="card-body">
@@ -17,12 +18,14 @@
 <script>
 export default {
     name: 'Card',
+    
     props: {
         image: {
             type: String,
             required: true
         }
     },
+
     methods: {
         onPrimaryButtonClick() {
             this.$emit('primary-button-click');

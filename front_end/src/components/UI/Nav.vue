@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-import { useCartStore } from '@/stores/CartWishlist.js'; // Import the cart store
+import { useCartStore } from '@/stores/CartControl.js'; // Import the cart store
 import Button from "primevue/button";
 
 const isMenuOpen = ref(false);
@@ -49,16 +49,16 @@ const toggleWishlist = () => {
 
         <ul :class="['links', { 'active': isMenuOpen }]">
             <li>
-                <RouterLink to="#">New Arrivals!</RouterLink>
+                <RouterLink to="#">New Arrivals</RouterLink>
             </li>
             <li>
-                <RouterLink to="#">Gift Package</RouterLink>
+                <RouterLink to="#">Best Sellers</RouterLink>
             </li>
             <li>
-                <RouterLink to="#">Product</RouterLink>
+                <RouterLink to="#">Gift Packages</RouterLink>
             </li>
             <li>
-                <RouterLink to="#">Shop</RouterLink>
+                <RouterLink to="shop">Shop</RouterLink>
             </li>
             <li>
                 <button @click="toggleCart" class="cart-button relative center flex justify-evenly items-center align-middle w-full">
@@ -93,6 +93,8 @@ const toggleWishlist = () => {
                     <i class="pi pi-times"></i>
                 </button>
             </li>
+
+            <li>Total: 0</li>
         </ul>
         <p v-else>Your cart is empty.</p>
     </div>

@@ -3,8 +3,8 @@ import { ref, onMounted, computed } from "vue";
 import Carousel from '@/components/UI/Carousel.vue'; // Import custom carousel
 import ProductService from "@/service/ProductService";
 import CardContainer from "@/components/Card/CardContainer.vue";
+import { useProductStore } from "@/stores/productStore";
 
-// Hero carousel data
 const heroSlides = ref([
   {
     src: '/src/assets/images/ban1.png',
@@ -18,7 +18,7 @@ const heroSlides = ref([
   }
 ]);
 
-// Product data
+const store = useProductStore()
 const products = ref();
 
 onMounted(() => {

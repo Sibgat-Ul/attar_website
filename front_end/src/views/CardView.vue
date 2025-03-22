@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import ProductService from "@/service/ProductService";
 import Button from "primevue/button";
-import { useCartStore } from '@/stores/CartWishlist.js';
+import { useCartStore } from '@/stores/CartControl.js';
 
 const cartStore = useCartStore();
 const route = useRoute();
@@ -68,6 +68,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
+
 h2 {
     font-size: 1.5rem;
     font-weight: 800;
@@ -184,4 +185,5 @@ button {
 button:hover {
   background: #333;
 }
+
 </style>

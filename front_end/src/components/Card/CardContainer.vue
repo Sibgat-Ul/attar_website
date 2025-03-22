@@ -67,7 +67,7 @@
 import Card from "primevue/card";
 import Button from "primevue/button";
 import Tag from "primevue/tag";
-import { useCartStore } from '@/stores/CartWishlist.js';
+import { useCartStore } from '@/stores/CartControl.js';
 
 const cartStore = useCartStore();
 
