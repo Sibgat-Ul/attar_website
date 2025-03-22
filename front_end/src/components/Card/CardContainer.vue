@@ -163,19 +163,20 @@ const getSeverity = (status) => {
 
     .card:hover {
         border: 1px solid #d3d3d3;
-        transition: border 1s;
+        transition: border .2s;
     }
 
     .product_img {
         width: 100%;
         height: auto;
         transform: scale(0.9);
+        transition: transform 0.3s ease-out;
         width: 100%;
     }
 
     .product_img:hover {
         transform: scale(1);
-        transition: transform 0.5s;
+        transition: transform 0.3s ease-in;
     }
 
     .wishlist-active {

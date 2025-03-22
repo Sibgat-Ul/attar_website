@@ -116,7 +116,6 @@ const products = computed(() => productStore.filteredProducts);
 </template>
 
 <style scoped>
-/* General Styling */
 .main {
   min-height: 100vh;
   background-color: white;
@@ -149,7 +148,6 @@ const products = computed(() => productStore.filteredProducts);
   border-color: #1a1a1a;
 }
 
-/* Mobile Filter Button */
 .filter-button {
   display: none;
   position: fixed;
@@ -171,7 +169,6 @@ const products = computed(() => productStore.filteredProducts);
   color: white;
 }
 
-/* Filter Popup */
 .filter-backdrop {
   position: fixed;
   top: 0;
@@ -235,7 +232,6 @@ const products = computed(() => productStore.filteredProducts);
   color: white;
 }
 
-/* Responsive for Smaller Screens */
 @media (max-width: 768px) {
   .filters {
     display: none;

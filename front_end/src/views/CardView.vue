@@ -38,6 +38,7 @@ onMounted(() => {
                 <h2 class="title">{{ product.name }}</h2>
                 <p><strong>Category:</strong> {{ product.category }}</p>
                 <p><strong>Description:</strong> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa consectetur ut rem fugit neque. Autem suscipit tempore earum facilis neque, libero optio dolorum doloribus odio sint esse mollitia atque quas!</p>
+                <p>Quantity: {{ product.quantity }}</p>
                 <p class="price">Price: BDT {{ product.price }} TK</p>
                 
                 <div class="button_section">
