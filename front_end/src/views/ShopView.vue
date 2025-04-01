@@ -12,9 +12,9 @@ const router = useRouter();
 const productStore = useProductStore();
 
 // User input for filtering
-const fragranceInput = ref("");
+const fragranceInput = ref("All");
 const nameInput = ref("");
-const categoryFilter = ref(""); // This will hold the filter from the URL
+const categoryFilter = ref("All"); // Default to "All"
 const showFilterPopup = ref(false);
 
 // Fetch products when the component mounts
@@ -30,6 +30,9 @@ const applyFilterFromURL = () => {
   if (filterParam) {
     categoryFilter.value = filterParam;
     productStore.categoryFilter = filterParam;
+  } else {
+    categoryFilter.value = "All"; // Default to "All" if no filter is provided
+    productStore.categoryFilter = "All";
   }
 };
 
@@ -42,15 +45,18 @@ watch(nameInput, () => {
 });
 
 watch(fragranceInput, () => {
-  if (fragranceInput.value === "All Product") {
-    fragranceInput.value = "";
-  }
   productStore.fragranceFilter = fragranceInput.value;
+});
+
+watch(categoryFilter, () => {
+  productStore.categoryFilter = categoryFilter.value;
 });
 
 // Function to update the URL based on selected filter
 const updateCategoryFilter = (filter) => {
-  router.push({ path: "/shop", query: { filter } });
+  categoryFilter.value = filter; // Update local state
+  productStore.categoryFilter = filter; // Update store
+  router.push({ path: "/shop", query: { filter } }); // Update URL
 };
 
 // Access filtered products from the store
@@ -59,12 +65,11 @@ const products = computed(() => productStore.filteredProducts);
 
 <template>
   <section class="main">
-    <!-- Filters for Desktop -->
     <section class="filters">
       <input type="text" v-model="nameInput" placeholder="Search by Name" />
 
       <select v-model="fragranceInput">
-        <option value="">All Fragrances</option>
+        <option value="All">All Fragrances</option>
         <option value="Floral">Floral</option>
         <option value="Woody">Woody</option>
         <option value="Citrus">Citrus</option>
@@ -72,7 +77,7 @@ const products = computed(() => productStore.filteredProducts);
       </select>
 
       <select @change="updateCategoryFilter($event.target.value)">
-        <option value="">All Products</option>
+        <option value="All">All Products</option>
         <option value="ForHim">For Him</option>
         <option value="ForHer">For Her</option>
         <option value="NewArrivals">New Arrivals</option>
@@ -90,7 +95,7 @@ const products = computed(() => productStore.filteredProducts);
         <input type="text" v-model="nameInput" placeholder="Search by Name" />
 
         <select v-model="fragranceInput">
-          <option value="">All Fragrances</option>
+          <option value="All">All Fragrances</option>
           <option value="Floral">Floral</option>
           <option value="Woody">Woody</option>
           <option value="Citrus">Citrus</option>
@@ -98,7 +103,7 @@ const products = computed(() => productStore.filteredProducts);
         </select>
 
         <select @change="updateCategoryFilter($event.target.value)">
-          <option value="">All Products</option>
+          <option value="All">All Products</option>
           <option value="ForHim">For Him</option>
           <option value="ForHer">For Her</option>
           <option value="NewArrivals">New Arrivals</option>

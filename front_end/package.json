@@ -12,8 +12,13 @@
     "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' http://localhost:4173 'cypress open --e2e'"
   },
   "dependencies": {
+    "@google-cloud/local-auth": "2.1.0",
     "@primevue/themes": "^4.2.5",
     "autoprefixer": "^10.4.20",
+    "axios": "^1.8.4",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "googleapis": "^148.0.0",
     "pinia": "^2.3.0",
     "postcss": "^8.5.1",
     "primeicons": "^7.0.0",

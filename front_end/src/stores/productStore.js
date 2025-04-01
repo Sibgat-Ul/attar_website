@@ -21,38 +21,25 @@ export const useProductStore = defineStore("productStore", () => {
     }
   }
 
-  // Filter products by fragrance type
-  const filteredByFragrance = computed(() => {
-    if (!fragranceFilter.value) return products.value;
-    return products.value.filter(product =>
-      product.fragranceType?.toLowerCase().includes(fragranceFilter.value.toLowerCase())
-    );
-  });
-
-  // Filter products by name
-  const filteredByName = computed(() => {
-    if (!nameFilter.value) return filteredByFragrance.value;
-    return filteredByFragrance.value.filter(product =>
-      product.name?.toLowerCase().includes(nameFilter.value.toLowerCase())
-    );
-  });
-
   // Combined filter for category, fragrance, and name
   const filteredProducts = computed(() => {
     let filtered = products.value;
 
-    if (categoryFilter.value) {
+    // Apply category filter
+    if (categoryFilter.value && categoryFilter.value !== "All") {
       filtered = filtered.filter(product =>
         product.category?.toLowerCase() === categoryFilter.value.toLowerCase()
       );
     }
 
-    if (fragranceFilter.value) {
+    // Apply fragrance filter
+    if (fragranceFilter.value && fragranceFilter.value !== "All") {
       filtered = filtered.filter(product =>
         product.fragranceType?.toLowerCase().includes(fragranceFilter.value.toLowerCase())
       );
     }
 
+    // Apply name filter
     if (nameFilter.value) {
       filtered = filtered.filter(product =>
         product.name?.toLowerCase().includes(nameFilter.value.toLowerCase())

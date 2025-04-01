@@ -18,33 +18,29 @@ const heroSlides = ref([
   }
 ]);
 
-const store = useProductStore()
+const store = useProductStore();
 const products = ref();
 
 onMounted(() => {
   ProductService.getProductsSmall()
     .then((data) => {
-      products.value = data.slice(0, 5)
-      
+      products.value = data.slice(0, 5);
       products.value.forEach(e => {
-        e.image = "/src/assets/images/Romance.webp"
+        e.image = "/src/assets/images/Romance.webp";
       });
-    }
-  );
+    });
 });
 </script>
 
 <template>
   <section class="main">
     <div class="hero">
-      <!-- Custom Carousel Component -->
       <Carousel 
         :slides="heroSlides" 
         :autoplay="true" 
         class="hero-carousel"
       />
       
-      <!-- Centered Text Overlay -->
       <div class="hero-text">
         <p>Explore the best collection of perfumes for both men and women.</p>
         <button>Shop Now</button>
@@ -85,9 +81,11 @@ onMounted(() => {
   z-index: 10;
 }
 
+/* Use clamp() for responsive text sizing */
 .hero-text > p {
-  font-size: 2.7rem;
+  font-size: clamp(1.5rem, 2vw, 2.7rem);
   font-weight: 700;
+  margin: 0 1rem;
 }
 
 .hero-text > button {
@@ -99,17 +97,28 @@ onMounted(() => {
   padding: 2px;
   border: none;
   cursor: pointer;
+  font-size: clamp(0.9rem, 1vw, 1.2rem);
+  transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.hero-text > button:hover {
+  background-color: #333;
+  color: #fff;
 }
 
 @media (max-width: 1024px) {
-  .hero-text p {
-    font-size: 2rem;
+  .hero-text > p {
+    font-size: clamp(1.4rem, 2.5vw, 2.2rem);
   }
 }
 
 @media (max-width: 768px) {
-  .hero-text p {
-    font-size: 1.5rem;
+  .hero-text > p {
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+  }
+  .hero-text > button {
+    width: 7rem;
+    height: 3rem;
   }
 }
 

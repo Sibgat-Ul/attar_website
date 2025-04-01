@@ -11,9 +11,9 @@ import Footer from './components/UI/Footer.vue';
 
   <RouterView />
 
-  <footer>
-    <Footer></Footer>
-  </footer>
+   
+  <Footer></Footer>
+
 </template>
 
 <style scoped>
@@ -48,6 +48,11 @@ header {
 </style>
 
 <style>
+* {
+  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
+}
+
 .wishlist-active {
   color: #f44336 !important;
 }
