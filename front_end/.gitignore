@@ -16,6 +16,9 @@ coverage
 
 /cypress/videos/
 /cypress/screenshots/
+/sheetDB/credentials.json
+/.env  
+.env
 
 # Editor directories and files
 .vscode/*
@@ -28,3 +31,4 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+./.vscode/*
