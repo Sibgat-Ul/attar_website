@@ -113,7 +113,7 @@
   
   <style scoped>
   .perfume-footer {
-    background-color: #2a2a2a;
+    background-color: #1a1a1a;
     color: #e0e0e0;
     padding: 2rem 0 0;
     font-family: 'Montserrat', sans-serif;

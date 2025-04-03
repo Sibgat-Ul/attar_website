@@ -8,7 +8,21 @@ export const useProductStore = defineStore("productStore", () => {
   const nameFilter = ref("");
   const categoryFilter = ref("");
 
-  // Fetch products from service
+  const fetchData = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/sheet', {
+        method: 'GET',
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error('There has been a problem with your fetch operation:', error);
+    }
+  };
+
   async function fetchProducts() {
     try {
       const data = await ProductService.getProductsSmall();
