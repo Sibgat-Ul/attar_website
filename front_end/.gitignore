@@ -13,7 +13,7 @@ dist
 dist-ssr
 coverage
 *.local
-
+*credentials.json
 /cypress/videos/
 /cypress/screenshots/
 /sheetDB/credentials.json
