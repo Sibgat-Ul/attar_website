@@ -21,7 +21,7 @@
     async mounted() {
       try {
         const response = await axios.get('http://localhost:3000/data');
-        this.sheetData = response.data;
+        this.sheetData = respose.data;
       } catch (error) {
         console.error('Error fetching data:', error);
       }

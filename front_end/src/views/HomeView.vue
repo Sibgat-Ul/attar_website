@@ -7,12 +7,12 @@ import { useProductStore } from "@/stores/productStore";
 
 const heroSlides = ref([
   {
-    src: '/src/assets/images/ban1.png',
+    src: '../../assets/images/ban1.png',
     title: 'Luxury Fragrances',
     description: 'Discover your signature scent'
   },
   {
-    src: '/src/assets/images/ban2.png', // Add more images
+    src: '../../assets/images/ban2.png',
     title: 'New Arrivals',
     description: 'Fresh collections for every occasion'
   }

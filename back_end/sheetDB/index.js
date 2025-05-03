@@ -1,5 +1,5 @@
 import {google} from 'googleapis';
-// import {authenticate} from '@google-cloud/local-auth';
+import {authenticate} from '@google-cloud/local-auth';
 import {GoogleAuth} from 'google-auth-library';
 import fs from 'fs/promises';
 import path from 'path';

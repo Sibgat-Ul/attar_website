@@ -1,0 +1,20 @@
+{
+  "name": "back_end",
+  "module": "./sheetDB/",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@google-cloud/local-auth": "^3.0.1",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "fs": "^0.0.1-security",
+    "google-auth-library": "^9.15.1",
+    "google-cloud": "^0.58.2",
+    "googleapis": "^148.0.0"
+  }
+}
