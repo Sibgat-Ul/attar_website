@@ -174,4 +174,5 @@ dist
 # Finder (MacOS) folder config
 .DS_Store
 
-sheetDB/credentials.json
+api/credentials.json
+.vercel
