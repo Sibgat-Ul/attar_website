@@ -4,7 +4,6 @@ import {GoogleAuth} from 'google-auth-library';
 import fs from 'fs/promises';
 import path from 'path';
 import process from 'process';
-// make a express server
 import express from 'express';
 import cors from 'cors';
 import {fileURLToPath} from 'url';
@@ -38,21 +37,6 @@ async function saveCredentials(client) {
   await fs.writeFile(TOKEN_PATH, payload);
 }
 
-// async function authorize(scopes) {
-//   let client = await loadSavedCredentialsIfExist();
-//   if (client) {
-//     return client;
-//   }
-//   client = await authenticate({
-//     scopes: scopes,
-//     keyfilePath: CREDENTIALS_PATH,
-//   });
-//   if (client.credentials) {
-//     await saveCredentials(client);
-//   }
-//   return client;
-// }
-
 async function authorize(scopes) {
   const auth = new GoogleAuth({
     scopes: scopes,
@@ -68,24 +52,25 @@ async function listProducts(auth) {
     const sheets = google.sheets({version: 'v4', auth});
     const res = await sheets.spreadsheets.values.get({
       spreadsheetId: '1gLINrhjGhJKIUBSL7LvAvwZ3SlWtkeFMGrPod0HOlmU',
-      range: 'A2:E',
+      range: 'A1:H',
     });
 
-    const rows = res.data.values;
+    let rows = res.data.values;
     if (!rows || rows.length === 0) {
       console.log('No data found.');
       return;
     }
-    
-    return rows.map((row) => {
-      return {
-        name: row[0],
-        notes: row[1],
-        description: row[2],
-        price: row[3],
-        type: row[4],
-      };
+    let [headers, ...products] = rows;
+
+    rows = products.map((row) => {
+      let obj = {}
+      for (let i = 0; i < headers.length; i++) {
+        obj[headers[i]] = row[i];
+      }
+      return obj;
     });
+
+    return rows;
   } catch (err) {
     console.error('The API returned an error: ' + err);
   }
@@ -97,35 +82,24 @@ async function getSheetData() {
   return data;
 }
 
-// async function authorize(scopes) {
-//   const auth = new google.auth.GoogleAuth({
-//       scopes: scopes,
-//   });
-//   return await auth.getClient();
-// }
-
-async function appendValues(values) {
+async function submitOrder(values) {
   try {
-      const auth = await authorize(['https://www.googleapis.com/auth/spreadsheets']);
-
-      const service = google.sheets({version: 'v4', auth});
-
-      const resource = {
-          'values': [['Name', 'Age', 'a', 'b', 'c']], // Correcting the object structure
-      };
-
-      const result = await service.spreadsheets.values.append({
-          spreadsheetId: "1nrp5Sw11bjtpFu31F3nFU44iU3o7VTaZhOcfirOP_d8",
-          range: ["Sheet1!A1:E1"], // Fixing range format
-          valueInputOption: "RAW", // Required for appending values
-          resource: resource,
-      });
-
-      console.log(`${result.data.updates.updatedCells} cells appended.`);
-      return result.data;
+    const auth = await authorize(['https://www.googleapis.com/auth/spreadsheets']);
+    const service = google.sheets({ version: 'v4', auth });
+    const resource = {
+      'values': [values]
+    };
+    const result = await service.spreadsheets.values.append({
+      spreadsheetId: "1nrp5Sw11bjtpFu31F3nFU44iU3o7VTaZhOcfirOP_d8",
+      range: "Sheet1!A1:L1", // <-- should be a string, not array
+      valueInputOption: "RAW",
+      resource: resource,
+    });
+    console.log(`${result.data.updates.updatedCells} cells appended.`);
+    return result.data;
   } catch (err) {
-      console.error('Error appending data:', err);
-      throw err;
+    console.error('Error appending data:', err);
+    throw err;
   }
 }
 
@@ -183,21 +157,23 @@ app.get('/api/sheet/read', async (req, res) => {
 });
 
 app.post('/api/sheet/append', async (req, res) => {
-  const { values } = req.body;
-  console.log(values);
+  let { values } = req.body;
 
-  if (!values || !Array.isArray(values)) {
-      return res.status(400).json({ error: 'Invalid values format. It must be an array.' });
+  if (!Array.isArray(values) || values.length !== 12) {
+    return res.status(400).json({ error: 'Invalid order format. Expected 12 fields.' });
+  }
+
+  if (values.some(v => v === undefined || v === null || v === "")) {
+    return res.status(400).json({ error: 'All fields are required.' });
   }
 
   try {
-      const result = await appendValues(values);
-      res.status(200).json({ message: 'Data appended successfully', result });
+    const result = await submitOrder(values);
+    res.status(200).json({ message: 'Data appended successfully', result });
   } catch (err) {
-      res.status(500).json({ error: 'Failed to append data', details: err.message });
+    res.status(500).json({ message: 'Failed to append data', details: err.message });
   }
 });
-
 const HOST = "192.168.88.48"
 
 app.listen(PORT, HOST, () => {

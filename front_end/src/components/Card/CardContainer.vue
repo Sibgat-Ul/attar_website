@@ -7,10 +7,13 @@
         <div class="products">
             <Card class="card text-start" v-for="product in props.products" :key="product.id">
                 <template #header>
-                    <div>
+                    <div 
+                        class="rounded flex justify-center items-center" style="min-width: 238px; min-height: 238px;"
+                        
+                    >
                         <img 
                             :src="product.image"
-                            class="product_img rounded"
+                            class="product_img rounded m-auto"
                             style="cursor: pointer;"
                             @click="$router.push(`/product/${product.id}`)" 
                         />
@@ -32,7 +35,7 @@
 
                 <template #content>
                     <div class="info border-t-1">
-                        <p>Notes: fruity, vanilla, musk, cinnamon</p>
+                        <p>Notes: {{ product.notes }}</p>
                     </div>
                 </template>
 
@@ -159,6 +162,11 @@ const getSeverity = (status) => {
         color: #1e1e1e;
         border: 1px solid #fff;
         transition: border 1s;
+    }
+
+    ::v-deep(.p-card-body) {
+        height: 100%;
+        justify-content: space-between;
     }
 
     .card:hover {

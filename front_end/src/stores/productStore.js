@@ -8,31 +8,57 @@ export const useProductStore = defineStore("productStore", () => {
   const nameFilter = ref("");
   const categoryFilter = ref("");
 
-  const fetchData = async () => {
+  async function getProductById(id) {
+    if (products.value.length === 0) {
+      await fetchProducts();
+    }
+
+    return products.value.find(product => parseInt(product.id) === parseInt(id));
+  }
+
+  async function submitOrder(orderDetails) {
     try {
-      const response = await fetch('http://localhost:3000/api/sheet', {
+      const response = await fetch('http://192.168.88.48:3000/api/sheet/append', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ values: orderDetails }), // <-- FIXED: wrap in { values: ... }
+      });
+
+      if (!response.ok) {
+        console.log(response)
+        // throw new Error('Network response was not ok');
+      }
+
+      return response.json();
+
+    } catch (error) {
+      console.error("Error submitting order:", error);
+      return { status: 'error', message: 'Failed to submit order' };
+    }
+  }
+  
+
+  async function fetchProducts() {
+    try {
+      const response = await fetch('http://192.168.88.48:3000/api/sheet/read', {
         method: 'GET',
       });
+      
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error('There has been a problem with your fetch operation:', error);
-    }
-  };
 
-  async function fetchProducts() {
-    try {
-      const data = await ProductService.getProductsSmall();
-      products.value = data.map(product => ({
+      products.value.push(...data.map(product => ({
         ...product,
-        image: "/src/assets/images/Romance.webp" // Assigning a default image
-      }));
+      })));
     } catch (error) {
       console.error("Error fetching products:", error);
     }
+
+    return products.value;
   }
 
   // Combined filter for category, fragrance, and name
@@ -69,6 +95,8 @@ export const useProductStore = defineStore("productStore", () => {
     fragranceFilter,
     nameFilter,
     categoryFilter,
-    filteredProducts // Use this computed property in your ShopView
+    filteredProducts,
+    getProductById,
+    submitOrder
   };
 });

@@ -19,17 +19,14 @@ const heroSlides = ref([
 ]);
 
 const store = useProductStore();
-const products = ref();
+const products = ref([]);
 
-onMounted(() => {
-  ProductService.getProductsSmall()
-    .then((data) => {
-      products.value = data.slice(0, 5);
-      products.value.forEach(e => {
-        e.image = "/src/assets/images/Romance.webp";
-      });
-    });
+onMounted(async() => {
+  let res = await store.fetchProducts();
+  res = res.slice(0, 5);
+  products.value = res;
 });
+
 </script>
 
 <template>
@@ -55,6 +52,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
+
 .hero {
   position: relative;
   width: 100%;
