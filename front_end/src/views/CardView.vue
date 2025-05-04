@@ -3,7 +3,6 @@ import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useCartStore } from '@/stores/CartControl.js';
 import { useProductStore } from '@/stores/productStore.js';
-import axios from 'axios';
 
 const cartStore = useCartStore();
 const route = useRoute();
