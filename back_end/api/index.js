@@ -1,3 +1,4 @@
+import { config } from 'dotenv';
 import {google} from 'googleapis';
 import {authenticate} from '@google-cloud/local-auth';
 import {GoogleAuth} from 'google-auth-library';
@@ -7,44 +8,97 @@ import process from 'process';
 import express from 'express';
 import cors from 'cors';
 import {fileURLToPath} from 'url';
-import {dirname} from 'path';
+import {dirname, join} from 'path';
 import {createRequire} from 'module';
 
-const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
-const TOKEN_PATH = path.join(process.cwd(), 'token.json');
-const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials.json');
+// Get the directory name of the current module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-async function loadSavedCredentialsIfExist() {
-  try {
-    const content = await fs.readFile(TOKEN_PATH);
-    const credentials = JSON.parse(content);
-    return GoogleAuth().fromJSON(credentials);
-  } catch (err) {
-    return null;
-  }
+// Load .env file from the same directory as this file
+const envPath = join(__dirname, '.env');
+console.log('Loading .env from:', envPath);
+
+// Load environment variables
+const env = config({ path: envPath });
+if (env.error) {
+  console.error('Error loading .env file:', env.error);
+} else {
+  console.log('.env file loaded successfully');
+  // Log the first few characters of each variable to verify they're loaded
+  Object.entries(env.parsed).forEach(([key, value]) => {
+    console.log(`${key}: ${value ? value.substring(0, 10) + '...' : 'undefined'}`);
+  });
 }
 
-async function saveCredentials(client) {
-  const content = await fs.readFile(CREDENTIALS_PATH);
-  const keys = JSON.parse(content);
-  const key = keys.installed || keys.web;
-  const payload = JSON.stringify({
-    type: 'authorized_user',
-    client_id: key.client_id,
-    client_secret: key.client_secret,
-    refresh_token: client.credentials.refresh_token,
-  });
-  await fs.writeFile(TOKEN_PATH, payload);
+// Verify environment variables are loaded
+if (!process.env.GOOGLE_CLIENT_EMAIL) {
+  console.error('GOOGLE_CLIENT_EMAIL is not set in environment variables');
+}
+if (!process.env.GOOGLE_PRIVATE_KEY) {
+  console.error('GOOGLE_PRIVATE_KEY is not set in environment variables');
+}
+
+const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
+
+// Debug environment variables
+console.log('Environment variables:', {
+  project_id: process.env.GOOGLE_PROJECT_ID,
+  client_email: process.env.GOOGLE_CLIENT_EMAIL,
+  client_id: process.env.GOOGLE_CLIENT_ID,
+  private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
+  private_key: process.env.GOOGLE_PRIVATE_KEY ? 'PRESENT' : 'MISSING',
+  auth_uri: process.env.GOOGLE_AUTH_URI,
+  token_uri: process.env.GOOGLE_TOKEN_URI,
+  auth_provider_x509_cert_url: process.env.GOOGLE_AUTH_PROVIDER_X509_CERT_URL,
+  client_x509_cert_url: process.env.GOOGLE_CLIENT_X509_CERT_URL,
+  universe_domain: process.env.GOOGLE_UNIVERSE_DOMAIN
+});
+
+// Service account credentials from environment variables
+const credentials = {
+  type: 'service_account',
+  project_id: env.parsed?.GOOGLE_PROJECT_ID,
+  private_key_id: env.parsed?.GOOGLE_PRIVATE_KEY_ID,
+  // Remove quotes from private key if they exist
+  // private_key: env.parsed?.GOOGLE_PRIVATE_KEY?.replace(/^"|"$/g, ''), .replace(/\\n/g, '\n')
+  private_key: env.parsed?.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+  client_email: env.parsed?.GOOGLE_CLIENT_EMAIL,
+  client_id: env.parsed?.GOOGLE_CLIENT_ID,
+  auth_uri: env.parsed?.GOOGLE_AUTH_URI,
+  token_uri: env.parsed?.GOOGLE_TOKEN_URI,
+  auth_provider_x509_cert_url: env.parsed?.GOOGLE_AUTH_PROVIDER_X509_CERT_URL,
+  client_x509_cert_url: env.parsed?.GOOGLE_CLIENT_X509_CERT_URL,
+  universe_domain: env.parsed?.GOOGLE_UNIVERSE_DOMAIN
+};
+
+// Debug the credentials object
+console.log('Credentials object:', {
+  ...credentials,
+});
+
+// Verify all required fields are present
+const requiredFields = ['project_id', 'private_key', 'client_email'];
+const missingFields = requiredFields.filter(field => !credentials[field]);
+if (missingFields.length > 0) {
+  console.error('Missing required fields:', missingFields);
 }
 
 async function authorize(scopes) {
-  const auth = new GoogleAuth({
-    scopes: scopes,
-    keyFile: CREDENTIALS_PATH,
-  });
+  try {
+    console.log('Attempting to authorize with scopes:', scopes);
+    const auth = new GoogleAuth({
+      scopes: scopes,
+      credentials: credentials
+    });
 
-  const client = await auth.getClient();
-  return client;
+    const client = await auth.getClient();
+    console.log('Authorization successful');
+    return client;
+  } catch (error) {
+    console.error('Authorization error:', error);
+    throw error;
+  }
 }
 
 async function listProducts(auth) {
@@ -105,12 +159,31 @@ async function submitOrder(values) {
 
 const app = express();
 
-const PORT = process.env.PORT || 3000;
+// Define allowed origins
+const allowedOrigins = [
+  'http://localhost:5173',    // Vite default port
+  'http://localhost:3000',    // React default port
+  'http://localhost:8080',    // Vue default port
+  'https://attar-website.vercel.app',  // Your production frontend URL
+  'https://attar-website-git-main-sibgatuls-projects.vercel.app',  // Vercel preview URL
+  'https://attar-website-sibgatuls-projects.vercel.app'  // Vercel production URL
+];
 
 const corsOptions = {
-  origin: '*',
-  methods: 'GET',
-  allowedHeaders: 'Content-Type',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  maxAge: 86400 // 24 hours
 };
 
 app.use(cors(corsOptions));
@@ -133,7 +206,7 @@ async function refreshData() {
 }
 
 refreshData();
-setInterval(refreshData, 10000);
+setInterval(refreshData, 100000);
 
 app.get('/', async (req, res) => {
   res.send("validated")
@@ -144,7 +217,7 @@ app.get('/api/sheet/read', async (req, res) => {
     if (cachedData) {
       res.json(cachedData);
     } else {
-      const auth = await authorize();
+      const auth = await authorize(SCOPES);
       const data = await listProducts(auth);
       cachedData = data;
       res.json(data);
@@ -174,9 +247,11 @@ app.post('/api/sheet/append', async (req, res) => {
     res.status(500).json({ message: 'Failed to append data', details: err.message });
   }
 });
-const HOST = "192.168.88.48"
 
-app.listen(PORT, HOST, () => {
-  console.log(`http://${HOST}:${PORT} Server is running)`);
-});
+// For Vercel deployment
+export default app;
 
+// const PORT = process.env.PORT || 3000; // Use PORT from environment or default to 3000
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}`);
+// });

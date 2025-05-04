@@ -1,6 +1,10 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
-import ProductService from "@/service/ProductService";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const SHEET_ENDPOINT = 'api/sheet/';
+const APPEND_ENDPOINT = 'append';
+const READ_ENDPOINT = 'read';
 
 export const useProductStore = defineStore("productStore", () => {
   const products = ref([]);
@@ -18,16 +22,16 @@ export const useProductStore = defineStore("productStore", () => {
 
   async function submitOrder(orderDetails) {
     try {
-      const response = await fetch('http://192.168.88.48:3000/api/sheet/append', {
+      const response = await fetch(`${API_BASE_URL}${SHEET_ENDPOINT}${APPEND_ENDPOINT}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ values: orderDetails }), // <-- FIXED: wrap in { values: ... }
+        body: JSON.stringify({ values: orderDetails }),
       });
 
       if (!response.ok) {
-        console.log(response)
+        console.log(response);
         // throw new Error('Network response was not ok');
       }
 
@@ -38,14 +42,18 @@ export const useProductStore = defineStore("productStore", () => {
       return { status: 'error', message: 'Failed to submit order' };
     }
   }
-  
+
 
   async function fetchProducts() {
     try {
-      const response = await fetch('http://192.168.88.48:3000/api/sheet/read', {
+      console.log(API_BASE_URL);
+      const response = await fetch(`${API_BASE_URL}${SHEET_ENDPOINT}${READ_ENDPOINT}`, {
         method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
       });
-      
+
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }

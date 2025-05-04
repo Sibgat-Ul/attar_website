@@ -175,4 +175,5 @@ dist
 .DS_Store
 
 api/credentials.json
+credentials.json
 .vercel

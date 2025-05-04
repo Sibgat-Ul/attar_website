@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import Carousel from '@/components/UI/Carousel.vue'; // Import custom carousel
-import ProductService from "@/service/ProductService";
 import CardContainer from "@/components/Card/CardContainer.vue";
 import { useProductStore } from "@/stores/productStore";
 
