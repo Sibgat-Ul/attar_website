@@ -161,12 +161,9 @@ const app = express();
 
 // Define allowed origins
 const allowedOrigins = [
-  'http://localhost:5173',    // Vite default port
-  'http://localhost:3000',    // React default port
-  'http://localhost:8080',    // Vue default port
   'https://attar-website.vercel.app',  // Your production frontend URL
   'https://attar-website-git-main-sibgatuls-projects.vercel.app',  // Vercel preview URL
-  'https://attar-website-sibgatuls-projects.vercel.app'  // Vercel production URL
+  'https://attar-website-sibgatuls-projects.vercel.app',
 ];
 
 const corsOptions = {

@@ -43,7 +43,6 @@ export const useProductStore = defineStore("productStore", () => {
     }
   }
 
-
   async function fetchProducts() {
     try {
       console.log(API_BASE_URL);
