@@ -103,11 +103,10 @@ const newProducts = computed(() => store.products.slice(5, 10));
     transform: translate(-50%, -50%);
     text-align: center;
     z-index: 10;
-    color: #eee; /* Softer off-white */
+    color: #000000; /* Softer off-white */
     padding: 2rem;
     border-radius: 8px;
     /* Create a blurred background effect */
-    background-color: rgba(0, 0, 0, 0.664); /* Slightly darker, more transparent base */
     backdrop-filter: blur(10px); /* Apply the blur effect */
     -webkit-backdrop-filter: blur(10px); /* For Safari support */
 }
@@ -125,8 +124,7 @@ const newProducts = computed(() => store.products.slice(5, 10));
     font-size: clamp(1.2rem, 2vw, 1.8rem);
     margin: 0 1rem 1rem;
     line-height: 1.5;
-    text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.6); /* Softer shadow */
-    color: #f3f3f3; /* Even softer off-white for the paragraph */
+    color: #000000; /* Even softer off-white for the paragraph */
 }
 
 .hero-text > button {
