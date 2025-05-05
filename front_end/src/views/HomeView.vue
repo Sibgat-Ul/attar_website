@@ -114,7 +114,6 @@ const newProducts = computed(() => store.products.slice(5, 10));
 .hero-text > h1 {
     font-size: clamp(2.5rem, 4vw, 4rem);
     margin-bottom: 0.5rem;
-    font-weight: 600;
     letter-spacing: 0.05em;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6); /* Slightly softer shadow */
     color: #f0f0f0; /* Slightly lighter off-white for the heading */
@@ -123,6 +122,7 @@ const newProducts = computed(() => store.products.slice(5, 10));
 .hero-text > p {
     font-size: clamp(1.2rem, 2vw, 1.8rem);
     margin: 0 1rem 1rem;
+    font-weight: 400;
     line-height: 1.5;
     color: #000000; /* Even softer off-white for the paragraph */
 }
@@ -149,20 +149,28 @@ const newProducts = computed(() => store.products.slice(5, 10));
 
 /* Adjust media queries for the new heading */
 @media (max-width: 1024px) {
+    .hero-text {
+      width: 75%;
+    }
     .hero-text > h1 {
         font-size: clamp(2rem, 3.5vw, 3rem);
     }
     .hero-text > p {
         font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+        font-weight: 400;
     }
 }
 
 @media (max-width: 768px) {
+    .hero-text {
+      width: 75%;
+    }
     .hero-text > h1 {
         font-size: clamp(1.8rem, 4vw, 2.5rem);
     }
     .hero-text > p {
-        font-size: clamp(1rem, 3vw, 1.4rem);
+        font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+        font-weight: 500;
     }
     .hero-text > button {
         width: auto;
