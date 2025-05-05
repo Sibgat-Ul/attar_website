@@ -135,6 +135,7 @@ const toggleWishlist = () => {
   padding: 1rem 4rem;
   transition: background 0.3s ease-in-out, backdrop-filter 0.5s ease-in-out, transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
   z-index: 1000;
+  color: #363636;
 }
 
 .navbar.sticky {
@@ -163,7 +164,6 @@ const toggleWishlist = () => {
 .navbar .links {
   width: 40%;
 }
-
 
 .logo {
   display: flex;
@@ -197,7 +197,9 @@ const toggleWishlist = () => {
 }
 
 .navbar a:hover {
-  color: #007bff;
+  color: #000000;
+  border-bottom: 0.5px solid #000000;
+  transition: border-bottom 0.3s;
 }
 
 @media (max-width: 1024px) {
