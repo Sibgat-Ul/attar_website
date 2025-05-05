@@ -115,7 +115,7 @@ const products = computed(() => productStore.filteredProducts);
     </div>
 
     <div class="product-class text-center">
-      <h3 class=" text-2xl" style="letter-spacing: .3em;">Collections</h3>
+      <h3 class=" text-2xl" style="letter-spacing: .3em;">Our Collections</h3>
       <CardContainer :products="products"/>
     </div>
   </section>
