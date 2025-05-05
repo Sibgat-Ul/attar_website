@@ -11,57 +11,36 @@ import {fileURLToPath} from 'url';
 import {dirname, join} from 'path';
 import {createRequire} from 'module';
 
-// Get the directory name of the current module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Load .env file from the same directory as this file
 const envPath = join(__dirname, '.env');
 console.log('Loading .env from:', envPath);
 
-// Load environment variables
 const env = config({ path: envPath });
 if (env.error) {
-  console.error('Error loading .env file:', env.error);
-} else {
-  console.log('.env file loaded successfully');
-  // Log the first few characters of each variable to verify they're loaded
-  Object.entries(env.parsed).forEach(([key, value]) => {
-    console.log(`${key}: ${value ? value.substring(0, 10) + '...' : 'undefined'}`);
-  });
-}
-
-// Verify environment variables are loaded
-if (!process.env.GOOGLE_CLIENT_EMAIL) {
-  console.error('GOOGLE_CLIENT_EMAIL is not set in environment variables');
-}
-if (!process.env.GOOGLE_PRIVATE_KEY) {
-  console.error('GOOGLE_PRIVATE_KEY is not set in environment variables');
-}
+  console.error('Something has gone wrong. Sorry for the inconvenience');
+} 
 
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 
-// Debug environment variables
-console.log('Environment variables:', {
-  project_id: process.env.GOOGLE_PROJECT_ID,
-  client_email: process.env.GOOGLE_CLIENT_EMAIL,
-  client_id: process.env.GOOGLE_CLIENT_ID,
-  private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
-  private_key: process.env.GOOGLE_PRIVATE_KEY ? 'PRESENT' : 'MISSING',
-  auth_uri: process.env.GOOGLE_AUTH_URI,
-  token_uri: process.env.GOOGLE_TOKEN_URI,
-  auth_provider_x509_cert_url: process.env.GOOGLE_AUTH_PROVIDER_X509_CERT_URL,
-  client_x509_cert_url: process.env.GOOGLE_CLIENT_X509_CERT_URL,
-  universe_domain: process.env.GOOGLE_UNIVERSE_DOMAIN
-});
+// console.log('Environment variables:', {
+//   project_id: process.env.GOOGLE_PROJECT_ID,
+//   client_email: process.env.GOOGLE_CLIENT_EMAIL,
+//   client_id: process.env.GOOGLE_CLIENT_ID,
+//   private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
+//   private_key: process.env.GOOGLE_PRIVATE_KEY ? 'PRESENT' : 'MISSING',
+//   auth_uri: process.env.GOOGLE_AUTH_URI,
+//   token_uri: process.env.GOOGLE_TOKEN_URI,
+//   auth_provider_x509_cert_url: process.env.GOOGLE_AUTH_PROVIDER_X509_CERT_URL,
+//   client_x509_cert_url: process.env.GOOGLE_CLIENT_X509_CERT_URL,
+//   universe_domain: process.env.GOOGLE_UNIVERSE_DOMAIN
+// });
 
-// Service account credentials from environment variables
 const credentials = {
   type: 'service_account',
   project_id: env.parsed?.GOOGLE_PROJECT_ID,
   private_key_id: env.parsed?.GOOGLE_PRIVATE_KEY_ID,
-  // Remove quotes from private key if they exist
-  // private_key: env.parsed?.GOOGLE_PRIVATE_KEY?.replace(/^"|"$/g, ''), .replace(/\\n/g, '\n')
   private_key: env.parsed?.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
   client_email: env.parsed?.GOOGLE_CLIENT_EMAIL,
   client_id: env.parsed?.GOOGLE_CLIENT_ID,
@@ -72,16 +51,16 @@ const credentials = {
   universe_domain: env.parsed?.GOOGLE_UNIVERSE_DOMAIN
 };
 
-// Debug the credentials object
-console.log('Credentials object:', {
-  ...credentials,
-});
+// // Debug the credentials object
+// console.log('Credentials object:', {
+//   ...credentials,
+// });
 
 // Verify all required fields are present
 const requiredFields = ['project_id', 'private_key', 'client_email'];
 const missingFields = requiredFields.filter(field => !credentials[field]);
 if (missingFields.length > 0) {
-  console.error('Missing required fields:', missingFields);
+  console.error('Missing required fields');
 }
 
 async function authorize(scopes) {
@@ -93,10 +72,10 @@ async function authorize(scopes) {
     });
 
     const client = await auth.getClient();
-    console.log('Authorization successful');
+    // console.log('Authorization successful');
     return client;
   } catch (error) {
-    console.error('Authorization error:', error);
+    console.error('Authorization error');
     throw error;
   }
 }
@@ -111,7 +90,7 @@ async function listProducts(auth) {
 
     let rows = res.data.values;
     if (!rows || rows.length === 0) {
-      console.log('No data found.');
+      // console.log('No data found.');
       return;
     }
     let [headers, ...products] = rows;
@@ -126,7 +105,7 @@ async function listProducts(auth) {
 
     return rows;
   } catch (err) {
-    console.error('The API returned an error: ' + err);
+    console.error('The API returned an error');
   }
 }
 
@@ -149,10 +128,10 @@ async function submitOrder(values) {
       valueInputOption: "RAW",
       resource: resource,
     });
-    console.log(`${result.data.updates.updatedCells} cells appended.`);
+    // console.log(`${result.data.updates.updatedCells} cells appended.`);
     return result.data;
   } catch (err) {
-    console.error('Error appending data:', err);
+    console.error('Error appending data');
     throw err;
   }
 }
@@ -164,6 +143,8 @@ const allowedOrigins = [
   'https://attar-website.vercel.app',  // Your production frontend URL
   'https://attar-website-git-main-sibgatuls-projects.vercel.app',  // Vercel preview URL
   'https://attar-website-sibgatuls-projects.vercel.app',
+  'http://localhost:3000', // Your local development URL
+  'http://localhost:5173', // Your local development URL
 ];
 
 const corsOptions = {
@@ -202,6 +183,30 @@ async function refreshData() {
   }
 }
 
+function mapSheetRowsToObjects(headers, rows) {
+  return rows.map((row) => {
+    const obj = {};
+    for (let i = 0; i < headers.length; i++) {
+      obj[headers[i]] = row[i];
+    }
+    return obj;
+  });
+}
+
+async function getAllProducts() {
+  if (cachedData) return cachedData;
+  const auth = await authorize(SCOPES);
+  const data = await listProducts(auth);
+  cachedData = data;
+  return data;
+}
+
+async function getHomeProducts(start = 0, count = 5) {
+  const allProducts = await getAllProducts();
+  return allProducts.slice(start, start + count);
+}
+
+
 refreshData();
 setInterval(refreshData, 100000);
 
@@ -209,7 +214,7 @@ app.get('/', async (req, res) => {
   res.send("validated")
 });
 
-app.get('/api/sheet/read', async (req, res) => {
+app.get('/api/products/read', async (req, res) => {
   try {
     if (cachedData) {
       res.json(cachedData);
@@ -226,7 +231,7 @@ app.get('/api/sheet/read', async (req, res) => {
   }
 });
 
-app.post('/api/sheet/append', async (req, res) => {
+app.post('/api/products/append', async (req, res) => {
   let { values } = req.body;
 
   if (!Array.isArray(values) || values.length !== 12) {
@@ -244,6 +249,34 @@ app.post('/api/sheet/append', async (req, res) => {
     res.status(500).json({ message: 'Failed to append data', details: err.message });
   }
 });
+
+app.get('/api/products/get', async (req, res) => {
+  try {
+    const start = parseInt(req.query.start) || 0;
+    const count = parseInt(req.query.count) || 5;
+
+    if (start < 0 || count <= 0) {
+      return res.status(400).json({ error: 'Invalid start or count values' });
+    }
+
+    const products = await getHomeProducts(start, count);
+    res.json(products);
+  } catch (err) {
+    console.error('Error fetching home products:', err);
+    res.status(500).json({ error: 'Failed to fetch home products' });
+  }
+});
+
+app.get('/api/products/shop', async (req, res) => {
+  try {
+    const allProducts = await getAllProducts();
+    res.json(allProducts);
+  } catch (err) {
+    console.error('Error fetching shop products:', err);
+    res.status(500).json({ error: 'Failed to fetch shop products' });
+  }
+});
+
 
 // For Vercel deployment
 export default app;

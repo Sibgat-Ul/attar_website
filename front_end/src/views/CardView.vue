@@ -12,13 +12,13 @@ const product = ref(null);
 const sizes = [3, 6, 9, 12];
 
 const userDetails = ref({
-  fullName: 'asdfasdf',
-  email: 'asdfasdf@gmail.com',
-  phone: '01717171717',
-  district: 'Dhaka',
-  area: 'Uttara',
-  areaCode: '12345',
-  houseNo: '123',
+  fullName: '',
+  email: '',
+  phone: '',
+  district: '',
+  area: '',
+  areaCode: '',
+  houseNo: '',
   productName: '',
   productID: '',
   size: sizes[0],
@@ -264,37 +264,45 @@ onMounted(async () => {
     }
 
     .sticky-image {
-        position:static;
-        top: initial;
+      position:static;
+      top: initial;
     }
   }
 
   .modal-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-.modal-content {
-  background: #fff;
-  padding: 2rem 2.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.2);
-  text-align: center;
-}
-.modal-content.success { border: 2px solid #4caf50; }
-.modal-content.error { border: 2px solid #f44336; }
-.modal-close {
-  margin-top: 1rem;
-  padding: 0.5rem 1.5rem;
-  background: #333;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-  </style>
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .modal-content {
+    background: #fff;
+    padding: 2rem 2.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+    text-align: center;
+  }
+
+  .modal-content.success { 
+    border: 2px solid #4caf50; 
+  }
+
+  .modal-content.error {
+    border: 2px solid #f44336; 
+  }
+
+  .modal-close {
+    margin-top: 1rem;
+    padding: 0.5rem 1.5rem;
+    background: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+</style>
   

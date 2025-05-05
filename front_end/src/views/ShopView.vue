@@ -4,42 +4,41 @@ import { useRoute, useRouter } from "vue-router";
 import { useProductStore } from "@/stores/productStore";
 import CardContainer from "@/components/Card/CardContainer.vue";
 
-// Use Vue Router
 const route = useRoute();
 const router = useRouter();
-
-// Use the product store
 const productStore = useProductStore();
 
-// User input for filtering
+// Local filter inputs
 const fragranceInput = ref("All");
 const nameInput = ref("");
-const categoryFilter = ref("All"); // Default to "All"
+const categoryFilter = ref("All");
 const showFilterPopup = ref(false);
 
-// Fetch products when the component mounts
+// Sync URL filters to store on mount
 onMounted(() => {
-  productStore.fetchProducts();
+  if (productStore.products.length === 0) {
+    // First-time fetch
+    productStore.fetchProducts();
+  } else {
+    // Load more if already populated
+    productStore.fetchProducts(true); // fetchNew = true
+  }
+
   applyFilterFromURL();
 });
 
-// Function to apply filters based on the URL query
+// Apply filter from query string
 const applyFilterFromURL = () => {
-  const filterParam = route.query.filter; // Read filter from URL
+  const filterParam = route.query.filter;
 
-  if (filterParam) {
-    categoryFilter.value = filterParam;
-    productStore.categoryFilter = filterParam;
-  } else {
-    categoryFilter.value = "All"; // Default to "All" if no filter is provided
-    productStore.categoryFilter = "All";
-  }
+  categoryFilter.value = filterParam || "All";
+  productStore.categoryFilter = categoryFilter.value;
 };
 
-// Watch for changes in the route and reapply filters
+// React to route filter changes
 watch(() => route.query.filter, applyFilterFromURL);
 
-// Watch for manual input changes and update store filters
+// Watch inputs and sync with store
 watch(nameInput, () => {
   productStore.nameFilter = nameInput.value;
 });
@@ -52,16 +51,17 @@ watch(categoryFilter, () => {
   productStore.categoryFilter = categoryFilter.value;
 });
 
-// Function to update the URL based on selected filter
+// Change category and push new URL
 const updateCategoryFilter = (filter) => {
-  categoryFilter.value = filter; // Update local state
-  productStore.categoryFilter = filter; // Update store
-  router.push({ path: "/shop", query: { filter } }); // Update URL
+  categoryFilter.value = filter;
+  productStore.categoryFilter = filter;
+  router.push({ path: "/shop", query: { filter } });
 };
 
-// Access filtered products from the store
+// Reactive product list
 const products = computed(() => productStore.filteredProducts);
 </script>
+
 
 <template>
   <section class="main">
@@ -69,20 +69,20 @@ const products = computed(() => productStore.filteredProducts);
       <input type="text" v-model="nameInput" placeholder="Search by Name" />
 
       <select v-model="fragranceInput">
-        <option value="All">All Fragrances</option>
-        <option value="Floral">Floral</option>
-        <option value="Woody">Woody</option>
-        <option value="Citrus">Citrus</option>
-        <option value="Oriental">Oriental</option>
-      </select>
+          <option value="All">All Fragrances</option>
+          <option value="Classy">Classy</option>
+          <option value="Oud">Oud</option>
+          <option value="Aquatic">Aquatic</option>
+        </select>
 
-      <select @change="updateCategoryFilter($event.target.value)">
-        <option value="All">All Products</option>
-        <option value="ForHim">For Him</option>
-        <option value="ForHer">For Her</option>
-        <option value="NewArrivals">New Arrivals</option>
-        <option value="BestSellers">Best Sellers</option>
-      </select>
+        <select @change="updateCategoryFilter($event.target.value)">
+          <option value="All">All Products</option>
+          <option value="ForHim">For Him</option>
+          <option value="ForHer">For Her</option>
+          <option value="Unisex">Unisex</option>
+          <option value="NewArrivals">New Arrivals</option>
+          <option value="BestSellers">Best Sellers</option>
+        </select>
     </section>
 
     <button class="filter-button" @click="showFilterPopup = true">Filter</button>
@@ -96,16 +96,16 @@ const products = computed(() => productStore.filteredProducts);
 
         <select v-model="fragranceInput">
           <option value="All">All Fragrances</option>
-          <option value="Floral">Floral</option>
-          <option value="Woody">Woody</option>
-          <option value="Citrus">Citrus</option>
-          <option value="Oriental">Oriental</option>
+          <option value="Classy">Classy</option>
+          <option value="Oud">Oud</option>
+          <option value="Aquatic">Aquatic</option>
         </select>
 
         <select @change="updateCategoryFilter($event.target.value)">
           <option value="All">All Products</option>
           <option value="ForHim">For Him</option>
           <option value="ForHer">For Her</option>
+          <option value="Unisex">Unisex</option>
           <option value="NewArrivals">New Arrivals</option>
           <option value="BestSellers">Best Sellers</option>
         </select>
@@ -114,8 +114,9 @@ const products = computed(() => productStore.filteredProducts);
       </div>
     </div>
 
-    <div class="product-class">
-      <CardContainer :products="products" />
+    <div class="product-class text-center">
+      <h3 class=" text-2xl" style="letter-spacing: .3em;">Collections</h3>
+      <CardContainer :products="products"/>
     </div>
   </section>
 </template>

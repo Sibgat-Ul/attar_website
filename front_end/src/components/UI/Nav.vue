@@ -36,57 +36,88 @@ const toggleWishlist = () => {
 };
 </script>
 
-<template>
-  <div :class="['navbar', { 'sticky': isScrolled }]">
-    <ul>
-      <li>
-        <RouterLink to="/">
-          <div class="logo">
-            <img alt="Vue logo" class="logo" src="../../assets/ZED black.svg" width="60" height="60" />
-            <div class="logo_text">
-              ZED Perfumes
-            </div>
+<!-- <div :class="['navbar', { 'sticky': isScrolled }]">
+  <ul>
+    <li>
+      <RouterLink to="/">
+        <div class="logo">
+          <img alt="Vue logo" class="logo" src="../../assets/ZED black.svg" width="60" height="60" />
+          <div class="logo_text">
+            ZED Perfumes
           </div>
-        </RouterLink>
-      </li>
-      <li class="hamburger" @click="toggleMenu">
-        <i class="pi pi-bars"></i>
-      </li>
-    </ul>
-    <ul :class="['links', { 'active': isMenuOpen }]">
-      <li>
-        <RouterLink to="#">New Arrivals</RouterLink>
-      </li>
-      <li>
-        <RouterLink to="#">Best Sellers</RouterLink>
-      </li>
-      <li>
-        <RouterLink to="#">Gift Packages</RouterLink>
-      </li>
-      <li>
-        <RouterLink to="shop">Shop</RouterLink>
-      </li>
-      <li>
-        <button @click="toggleCart" class="cart-button relative center flex justify-evenly items-center align-middle w-full">
-          <i class="pi pi-shopping-cart text-xl"></i>
-          <span>({{ cartStore.cart.length }})</span>
-        </button>
-      </li>
-      <li>
-        <button @click="toggleWishlist" class="cart-button relative center flex justify-evenly items-center align-middle w-full">
-          <i class="pi pi-heart text-xl"></i>
-          <span>({{ cartStore.wishlist.length }})</span>
-        </button>
-      </li>
-      <li>
-        <RouterLink to="#"><i class="pi pi-user"></i></RouterLink>
-      </li>
-    </ul>
-  </div>
+        </div>
+      </RouterLink>
+    </li>
+    <li class="hamburger" @click="toggleMenu">
+      <i class="pi pi-bars"></i>
+    </li>
+  </ul>
+  <ul :class="['links', { 'active': isMenuOpen }]">
+    <li>
+      <RouterLink to="#">New Arrivals</RouterLink>
+    </li>
+    <li>
+      <RouterLink to="#">Best Sellers</RouterLink>
+    </li>
+    <li>
+      <RouterLink to="#">Gift Packages</RouterLink>
+    </li>
+    <li>
+      <RouterLink to="shop">Shop</RouterLink>
+    </li>
+    <li>
+      <button @click="toggleCart" class="cart-button relative center flex justify-evenly items-center align-middle w-full">
+        <i class="pi pi-shopping-cart text-xl"></i>
+        <span>({{ cartStore.cart.length }})</span>
+      </button>
+    </li>
+    <li>
+      <button @click="toggleWishlist" class="cart-button relative center flex justify-evenly items-center align-middle w-full">
+        <i class="pi pi-heart text-xl"></i>
+        <span>({{ cartStore.wishlist.length }})</span>
+      </button>
+    </li>
+    <li>
+      <RouterLink to="#"><i class="pi pi-user"></i></RouterLink>
+    </li>
+  </ul>
+</div> -->
 
-  <!-- Use the new sidebar components -->
-  <CartSidebar :isOpen="isCartOpen" @close="toggleCart" />
-  <WishlistSidebar :isOpen="isWishlistOpen" @close="toggleWishlist" />
+<template>
+  <nav :class="['navbar', { 'sticky': isScrolled }]">
+      <ul>
+        <RouterLink to="/" class="logo">
+          <img alt="Vue logo" class="logo-image" src="../../assets/ZED black.svg" width="60" height="60" />
+          <div class="logo-text">ZED Perfumes</div>
+        </RouterLink>
+      </ul>
+
+      <ul class="links" :class="{ 'active': isMenuOpen }">
+          <li><RouterLink to="#">Best Sellers</RouterLink></li>
+          <li><RouterLink to="shop">Shop</RouterLink></li>
+
+          <li>
+              <button @click="toggleCart" class="cart-button relative center flex justify-evenly items-center align-middle w-full">
+                  <i class="pi pi-shopping-cart text-xl"></i>
+                  <span>({{ cartStore.cart.length }})</span>
+              </button>
+          </li>
+          <li>
+              <button @click="toggleWishlist" class="cart-button relative center flex justify-evenly items-center align-middle w-full">
+                  <i class="pi pi-heart text-xl"></i>
+                  <span>({{ cartStore.wishlist.length }})</span>
+              </button>
+          </li>
+          <li><RouterLink to="#"><i class="pi pi-user"></i></RouterLink></li>
+      </ul>
+      
+      <div class="hamburger" @click="toggleMenu">
+          <i class="pi pi-bars"></i>
+      </div>
+  </nav>
+
+  <CartSidebar v-if="isCartOpen" :isOpen="isCartOpen" @close="toggleCart" />
+  <WishlistSidebar v-if="isWishlistOpen" :isOpen="isWishlistOpen" @close="toggleWishlist" />
 </template>
 
 <style scoped>
@@ -130,7 +161,7 @@ const toggleWishlist = () => {
 }
 
 .navbar .links {
-  width: 60%;
+  width: 40%;
 }
 
 

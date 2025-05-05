@@ -85,9 +85,9 @@
   const quickLinks = [
     { text: 'Home', path: '/' },
     { text: 'Shop', path: '/shop' },
-    { text: 'Collections', path: '/collections' },
-    { text: 'Best Sellers', path: '/best-sellers' },
-    { text: 'New Arrivals', path: '/new-arrivals' },
+    // { text: 'Collections', path: '/collections' },
+    // { text: 'Best Sellers', path: '/best-sellers' },
+    // { text: 'New Arrivals', path: '/new-arrivals' },
   ];
   
   // Customer service links

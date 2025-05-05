@@ -9,7 +9,6 @@
                 <template #header>
                     <div 
                         class="rounded flex justify-center items-center" style="min-width: 238px; min-height: 238px;"
-                        
                     >
                         <img 
                             :src="product.image"
@@ -23,9 +22,9 @@
                 <template #title>
                     <p style="cursor: pointer;" class="font-medium flex justify-between items-center" @click="$router.push(`/product/${product.id}`)">
                         {{ product.name }}
-                        <span class="ml-2">
-                            <Tag :value="product.inventoryStatus" :severity="getSeverity(product.inventoryStatus)" />
-                        </span>
+                        <!-- <span class="ml-2">
+                            <Tag :value="product.inventoryStatus" :severity="getSeverity()" />
+                        </span> -->
                     </p>
                 </template>
 
@@ -106,12 +105,10 @@ const getSeverity = (status) => {
 
 <style scoped>
     h3 {
-        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
         font-size: 1.5em;
-        font-weight: bold;
-        border-bottom: 2px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
         margin: 1rem auto;
-        margin-bottom: .5rem;
+        margin-bottom: .2rem;
         max-width: 25rem;
     }
 
@@ -122,10 +119,10 @@ const getSeverity = (status) => {
         
     .products {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(15em, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(15em, auto)); /* Changed max to auto */
         gap: 0.7rem;
         padding: 2em 3.5em;
-        align-content: center;
+        align-content: start;
         justify-content: center;
         justify-items: center;
         width: 90%;
